@@ -70,6 +70,6 @@ theme: next
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  repo: https://github.com/JerryChan123/JerryChan123.github.io
+  repo: https://github.com/JerryChan123/jerrychan123.github.io
   type: git
   branch: master
