@@ -1,0 +1,871 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="这里开启一轮关于View的研究，主要选择View开始研究的原因是我愿意(ง •̀_•́)ง,！在深入了解View的过程中，主要有两个目的，其一是整理一下以前对于View的认识且纠正一下错思维误区，其二是更深入了解其运行原理以备日后能够侃侃而谈骗基友。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="android View的探索(一) : setContentView()过程研究">
+<meta property="og:url" content="http://yoursite.com/2016/12/09/android-View的探索-一-setContentView-过程研究/index.html">
+<meta property="og:site_name" content="Jerry Chan">
+<meta property="og:description" content="这里开启一轮关于View的研究，主要选择View开始研究的原因是我愿意(ง •̀_•́)ง,！在深入了解View的过程中，主要有两个目的，其一是整理一下以前对于View的认识且纠正一下错思维误区，其二是更深入了解其运行原理以备日后能够侃侃而谈骗基友。">
+<meta property="og:image" content="http://yoursite.com/2016/12/09/android-View的探索-一-setContentView-过程研究/setcontentView.png">
+<meta property="og:updated_time" content="2016-12-13T02:40:56.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="android View的探索(一) : setContentView()过程研究">
+<meta name="twitter:description" content="这里开启一轮关于View的研究，主要选择View开始研究的原因是我愿意(ง •̀_•́)ง,！在深入了解View的过程中，主要有两个目的，其一是整理一下以前对于View的认识且纠正一下错思维误区，其二是更深入了解其运行原理以备日后能够侃侃而谈骗基友。">
+<meta name="twitter:image" content="http://yoursite.com/2016/12/09/android-View的探索-一-setContentView-过程研究/setcontentView.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/12/09/android-View的探索-一-setContentView-过程研究/"/>
+
+
+
+
+
+  <title> android View的探索(一) : setContentView()过程研究 | Jerry Chan </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Jerry Chan</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Android Developer</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2016/12/09/android-View的探索-一-setContentView-过程研究/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Jerry Chan">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Jerry Chan">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Jerry Chan" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                android View的探索(一) : setContentView()过程研究
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-09T15:56:36+08:00">
+                2016-12-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android源码研究/" itemprop="url" rel="index">
+                    <span itemprop="name">Android源码研究</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2016/12/09/android-View的探索-一-setContentView-过程研究/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/12/09/android-View的探索-一-setContentView-过程研究/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2016/12/09/android-View的探索-一-setContentView-过程研究/" class="leancloud_visitors" data-flag-title="android View的探索(一) : setContentView()过程研究">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>这里开启一轮关于View的研究，主要选择View开始研究的原因是我愿意(ง •̀_•́)ง,！在深入了解View的过程中，主要有两个目的，其一是整理一下以前对于View的认识且纠正一下错思维误区，其二是更深入了解其运行原理以备日后能够侃侃而谈骗基友。</p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><a id="more"></a></h2><p>###下面进入正题：setContentView()<br>首先从最宏观的角度来说，我们在学习android的过程中第一次遇到关于View方法就是setContentView()，随着学习的加深，我们发现当代码中要实例化一个View的时候，很多时候是通过LayoutInflater来进行的，那为什么setContentView()不需要通过这种方式？</p>
+<p>为啥不需要，就是我们这篇文章要研究的内容，so read the fucking code。</p>
+<hr>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line">   ---- Acvtivity.java ----</div><div class="line"></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setContentView</span><span class="params">(@LayoutRes <span class="keyword">int</span> layoutResID)</span> </span>&#123;</div><div class="line">       getWindow().setContentView(layoutResID);</div><div class="line">       initWindowDecorActionBar();</div><div class="line">   &#125;</div><div class="line">​</div><div class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">attach</span><span class="params">(Context context, ActivityThread aThread,</span></span></div><div class="line">           Instrumentation instr, IBinder token, <span class="keyword">int</span> ident,</div><div class="line">           Application application, Intent intent, ActivityInfo info,</div><div class="line">           CharSequence title, Activity parent, String id,</div><div class="line">           NonConfigurationInstances lastNonConfigurationInstances,</div><div class="line">           Configuration config, String referrer, IVoiceInteractor voiceInteractor) &#123;</div><div class="line">       attachBaseContext(context);</div><div class="line">       mFragments.attachHost(<span class="keyword">null</span> <span class="comment">/*parent*/</span>);</div><div class="line">       mWindow = <span class="keyword">new</span> PhoneWindow(<span class="keyword">this</span>);</div><div class="line">       mWindow.setCallback(<span class="keyword">this</span>);</div><div class="line">       mWindow.setOnWindowDismissedCallback(<span class="keyword">this</span>);</div><div class="line">       mWindow.getLayoutInflater().setPrivateFactory(<span class="keyword">this</span>);</div><div class="line">       <span class="keyword">if</span> (info.softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED) &#123;</div><div class="line">           mWindow.setSoftInputMode(info.softInputMode);</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">if</span> (info.uiOptions != <span class="number">0</span>) &#123;</div><div class="line">           mWindow.setUiOptions(info.uiOptions);</div><div class="line">       &#125;</div><div class="line">     ....</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>上述代码来源于最基础的Activity类，我们从最基本的看起即可，在代码可以看到主要做了两个操作：</p>
+<blockquote>
+<p>获取window进行设置contentView</p>
+<p>初始化ActionBar</p>
+</blockquote>
+<p>从上方我们可以推测，初始化contentView的过程，其实是在window中进行的，而这个window的具体实现则是PhoneWindow,在Activity的attach方法中我们可以知道，因此需要进入的PhoneWindow中过去查看setContentView()：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line">   ---- PhoneWindow.java ----</div><div class="line"></div><div class="line">​</div><div class="line"><span class="comment">// This is the view in which the window contents are placed. It is either</span></div><div class="line">   <span class="comment">// mDecor itself, or a child of mDecor where the contents go.</span></div><div class="line">   <span class="keyword">private</span> ViewGroup mContentParent;</div><div class="line"> <span class="comment">// This is the top-level view of the window, containing the window decor.</span></div><div class="line">   <span class="keyword">private</span> DecorView mDecor;</div><div class="line"><span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setContentView</span><span class="params">(<span class="keyword">int</span> layoutResID)</span> </span>&#123;</div><div class="line">       <span class="keyword">if</span> (mContentParent == <span class="keyword">null</span>) &#123;</div><div class="line">         <span class="comment">//初始化DecorView</span></div><div class="line">           installDecor();</div><div class="line">       &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!hasFeature(FEATURE_CONTENT_TRANSITIONS)) &#123;</div><div class="line">           mContentParent.removeAllViews();</div><div class="line">       &#125;</div><div class="line">​</div><div class="line">       <span class="keyword">if</span> (hasFeature(FEATURE_CONTENT_TRANSITIONS)) &#123;</div><div class="line">           <span class="keyword">final</span> Scene newScene = Scene.getSceneForLayout(mContentParent, layoutResID,</div><div class="line">                   getContext());</div><div class="line">           transitionTo(newScene);</div><div class="line">       &#125; <span class="keyword">else</span> &#123;</div><div class="line">         <span class="comment">//调用inflate初始化</span></div><div class="line">           mLayoutInflater.inflate(layoutResID, mContentParent);</div><div class="line"></div><div class="line">       &#125;</div><div class="line">       mContentParent.requestApplyInsets();</div><div class="line">       <span class="keyword">final</span> Callback cb = getCallback();</div><div class="line">       <span class="keyword">if</span> (cb != <span class="keyword">null</span> &amp;&amp; !isDestroyed()) &#123;</div><div class="line">           cb.onContentChanged();</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>在上述代码中FEATURE_CONTENT_TRANSITIONS是5.0增加的一个标识来识别是否进行实现Activity或者Fragment切换时的异常复杂的动画效果，我们可以省略来进行代码分析:</p>
+<blockquote>
+<p>installDecor()，初始化DecorView以及mContentParent操作</p>
+<p>调用LayoutInflater.inflate()方法初始化布局</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">   ---- PhoneWindow.java ----</div><div class="line"></div><div class="line">​</div><div class="line">     <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">installDecor</span><span class="params">()</span> </span>&#123;</div><div class="line">       <span class="keyword">if</span> (mDecor == <span class="keyword">null</span>) &#123;</div><div class="line">         <span class="comment">//此方法new了一个DecorView</span></div><div class="line">           mDecor = generateDecor();</div><div class="line">           mDecor.setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);</div><div class="line">           mDecor.setIsRootNamespace(<span class="keyword">true</span>);</div><div class="line">           <span class="keyword">if</span> (!mInvalidatePanelMenuPosted &amp;&amp; mInvalidatePanelMenuFeatures != <span class="number">0</span>) &#123;</div><div class="line">               mDecor.postOnAnimation(mInvalidatePanelMenuRunnable);</div><div class="line">           &#125;</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">if</span> (mContentParent == <span class="keyword">null</span>) &#123;</div><div class="line">         <span class="comment">//进行mContentParent初始化的过程</span></div><div class="line">           mContentParent = generateLayout(mDecor);</div><div class="line">​</div><div class="line">           <span class="comment">// Set up decor part of UI to ignore fitsSystemWindows if appropriate.</span></div><div class="line">           mDecor.makeOptionalFitsSystemWindows();</div><div class="line">           ...</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
+<p>在DecorView和mContentParent初始化完成后，系统再调用inflate()方法来进行布局的初始化的过程，我们需要知道具体是哪个LayoutInflater来完成工作的:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div></pre></td><td class="code"><pre><div class="line"> <span class="comment">// PhoneWindow.java ----</span></div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">PhoneWindow</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">       <span class="keyword">super</span>(context);</div><div class="line">       mLayoutInflater = LayoutInflater.from(context);</div><div class="line">   &#125;</div><div class="line"> <span class="comment">//LayoutInflater.java ----</span></div><div class="line"></div><div class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> LayoutInflater <span class="title">from</span><span class="params">(Context context)</span> </span>&#123;</div><div class="line">       LayoutInflater LayoutInflater =</div><div class="line">               (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);</div><div class="line"></div><div class="line">       <span class="keyword">if</span> (LayoutInflater == <span class="keyword">null</span>) &#123;</div><div class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError(<span class="string">"LayoutInflater not found."</span>);</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">return</span> LayoutInflater;</div><div class="line">   &#125;</div><div class="line"><span class="comment">//ContextImpl.java</span></div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">public</span> Object <span class="title">getSystemService</span><span class="params">(String name)</span> </span>&#123;</div><div class="line">       <span class="keyword">return</span> SystemServiceRegistry.getSystemService(<span class="keyword">this</span>, name);</div><div class="line"></div><div class="line">   &#125;</div><div class="line"><span class="comment">//SystemServiceRegistry</span></div><div class="line"></div><div class="line">registerService(Context.LAYOUT_INFLATER_SERVICE, LayoutInflater.class,</div><div class="line">               <span class="keyword">new</span> CachedServiceFetcher&lt;LayoutInflater&gt;() &#123;</div><div class="line">           <span class="meta">@Override</span></div><div class="line">           <span class="function"><span class="keyword">public</span> LayoutInflater <span class="title">createService</span><span class="params">(ContextImpl ctx)</span> </span>&#123;</div><div class="line">               <span class="keyword">return</span> <span class="keyword">new</span> PhoneLayoutInflater(ctx.getOuterContext());</div><div class="line"></div><div class="line">           &#125;&#125;);</div></pre></td></tr></table></figure></p>
+<p>我们看到inflater的初始化来自于from方法，这在我们撸代码的时候其实也经常会那么写，但是点到进去会发现是个抽象类，而inflater由context.getSystemService()获取，由于context的具体实现类是ContextImpl，我们再一次追溯，知道在SystemServiceRegistry中找到了具体实现类：PhoneLayoutInflater。<br>接着我们回溯到PhoneWindow的mLayoutInflater.inflate(layoutResID, mContentParent)，其实到这步就已经跟我们在布局中使用LayoutInflater的效果一样了。<br>but，我们要有好奇心，点进去看看我们跳回inflate()这个方法,跳回PhoneLayoutInflater中进行查看，发现里面并没有inflate方法，那只能重新回到LayoutInflater.java中了，发现找了半天并没有什么卵用，不过了解到LayoutInlfater的具体实现是PhoneLayoutInflater对我们也是很有帮助的=￣ω￣=。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">//LayoutInflater.java</div><div class="line"></div><div class="line">public View inflate(@LayoutRes int resource, @Nullable ViewGroup root, boolean attachToRoot) &#123;</div><div class="line">   //获取资源文件</div><div class="line"></div><div class="line">       final Resources res = getContext().getResources();</div><div class="line"></div><div class="line">       if (DEBUG) &#123;</div><div class="line">           Log.d(TAG, &quot;INFLATING from resource: \&quot;&quot; + res.getResourceName(resource) + &quot;\&quot; (&quot;</div><div class="line">                   + Integer.toHexString(resource) + &quot;)&quot;);</div><div class="line">       &#125;</div><div class="line">  //获取xml解析器XmlResourceParser</div><div class="line"></div><div class="line">       final XmlResourceParser parser = res.getLayout(resource);</div><div class="line"></div><div class="line">       try &#123;</div><div class="line">          //返回解析后得到的View</div><div class="line"></div><div class="line">           return inflate(parser, root, attachToRoot);</div><div class="line"></div><div class="line">       &#125; finally &#123;</div><div class="line">           parser.close();</div><div class="line">       &#125;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>最终还是比较简单的，我们在inflate中看到，其实获得XmlResourceParser解析器，然后将布局文件添加到了根布局当中。</p>
+<p>等等最后还有一个方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//PhoneWindow.java</span></div><div class="line"><span class="keyword">final</span> Callback cb = getCallback();</div><div class="line"><span class="keyword">if</span> (cb != <span class="keyword">null</span> &amp;&amp; !isDestroyed()) &#123;  </div><div class="line">  cb.onContentChanged();</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>这个callback是干哈用的，点进去：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCallback</span><span class="params">(Callback callback)</span> </span>&#123;</div><div class="line"></div><div class="line">       mCallback = callback;</div><div class="line">   &#125;</div><div class="line">​</div><div class="line">   <span class="comment">/**</span></div><div class="line">     * Return the current Callback interface for this window.</div><div class="line">     */</div><div class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Callback <span class="title">getCallback</span><span class="params">()</span> </span>&#123;</div><div class="line">       <span class="keyword">return</span> mCallback;</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p>我们只能找到setCallBack()这个方法的具体位置，我们在上面的activity找到了window=new PhoneWindow()这个实现:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//activity</span></div><div class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">attach</span><span class="params">(Context context, ActivityThread aThread,</span></span></div><div class="line">           Instrumentation instr, IBinder token, <span class="keyword">int</span> ident,</div><div class="line">           Application application, Intent intent, ActivityInfo info,</div><div class="line">           CharSequence title, Activity parent, String id,</div><div class="line">           NonConfigurationInstances lastNonConfigurationInstances,</div><div class="line">           Configuration config, String referrer, IVoiceInteractor voiceInteractor) &#123;</div><div class="line">       attachBaseContext(context);</div><div class="line">       mFragments.attachHost(<span class="keyword">null</span> <span class="comment">/*parent*/</span>);</div><div class="line">       mWindow = <span class="keyword">new</span> PhoneWindow(<span class="keyword">this</span>);</div><div class="line">       mWindow.setCallback(<span class="keyword">this</span>);</div><div class="line">       mWindow.setOnWindowDismissedCallback(<span class="keyword">this</span>);</div><div class="line">       mWindow.getLayoutInflater().setPrivateFactory(<span class="keyword">this</span>);</div><div class="line">       <span class="keyword">if</span> (info.softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED) &#123;</div><div class="line">           mWindow.setSoftInputMode(info.softInputMode);</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">if</span> (info.uiOptions != <span class="number">0</span>) &#123;</div><div class="line">           mWindow.setUiOptions(info.uiOptions);</div><div class="line">       &#125;</div><div class="line">     ....</div><div class="line">   &#125;</div></pre></td></tr></table></figure></p>
+<p> mWindow.setCallback(this)这句话是不是够了！嗯哼！那么 cb.onContentChanged()这个方法其实就是调用了在activity中的onContentChanged方法，这是通知ContentView发生改变的方法，我们可以重写进行一些你喜欢的操作。</p>
+<hr>
+<p>####总结<br>画张图吧，这样比较好理解：</p>
+<img src="/2016/12/09/android-View的探索-一-setContentView-过程研究/setcontentView.png" alt="setContentView()过程图" title="setContentView()过程图">
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/09/volley源码学习/" rel="next" title="volley源码学习">
+                <i class="fa fa-chevron-left"></i> volley源码学习
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/09/android-View的探索-二-View的形成过程/" rel="prev" title="android View的探索(二) : View的形成过程">
+                android View的探索(二) : View的形成过程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/12/09/android-View的探索-一-setContentView-过程研究/"
+           data-title="android View的探索(一) : setContentView()过程研究" data-url="http://yoursite.com/2016/12/09/android-View的探索-一-setContentView-过程研究/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Jerry Chan" />
+          <p class="site-author-name" itemprop="name">Jerry Chan</p>
+          <p class="site-description motion-element" itemprop="description">In me the tiger sniffes the rose</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/JerryChan123" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/Jerry_Linnnnnnn" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/annylin0922" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#"><span class="nav-number">1.</span> <span class="nav-text"></span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jerry Chan</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"jerrychan123"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("OtRTTkhYQKMh2ztC9L6czjbP-gzGzoHsz", "dsKHW7hE1MX9u21g5zouUp7R");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+</body>
+</html>
