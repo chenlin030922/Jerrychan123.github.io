@@ -1,0 +1,932 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="内部类," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="内部类基本用法
+
+example:
+123456789101112131415161718public class Parcel1&amp;#123;public static void main(String[] args) &amp;#123;//实例化方式1Parcel1.Content content=new Parcel1().new Content();//实例化方式二Parcel1 parcel1=">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Think-in-Java学习笔记三：内部类学习">
+<meta property="og:url" content="http://yoursite.com/2017/01/23/Think-in-Java学习笔记三：内部类学习/index.html">
+<meta property="og:site_name" content="Jerry Chan">
+<meta property="og:description" content="内部类基本用法
+
+example:
+123456789101112131415161718public class Parcel1&amp;#123;public static void main(String[] args) &amp;#123;//实例化方式1Parcel1.Content content=new Parcel1().new Content();//实例化方式二Parcel1 parcel1=">
+<meta property="og:updated_time" content="2017-01-23T09:13:16.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Think-in-Java学习笔记三：内部类学习">
+<meta name="twitter:description" content="内部类基本用法
+
+example:
+123456789101112131415161718public class Parcel1&amp;#123;public static void main(String[] args) &amp;#123;//实例化方式1Parcel1.Content content=new Parcel1().new Content();//实例化方式二Parcel1 parcel1=">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/01/23/Think-in-Java学习笔记三：内部类学习/"/>
+
+
+
+
+
+  <title> Think-in-Java学习笔记三：内部类学习 | Jerry Chan </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Jerry Chan</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Android Developer</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/23/Think-in-Java学习笔记三：内部类学习/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Jerry Chan">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Jerry Chan">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Jerry Chan" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Think-in-Java学习笔记三：内部类学习
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-01-23T17:12:00+08:00">
+                2017-01-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Think-in-Java/" itemprop="url" rel="index">
+                    <span itemprop="name">Think in Java</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2017/01/23/Think-in-Java学习笔记三：内部类学习/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/01/23/Think-in-Java学习笔记三：内部类学习/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/01/23/Think-in-Java学习笔记三：内部类学习/" class="leancloud_visitors" data-flag-title="Think-in-Java学习笔记三：内部类学习">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h1><h3>基本用法</h3>
+
+<p>example:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Parcel1</span></span>&#123;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line"><span class="comment">//实例化方式1</span></div><div class="line">Parcel1.Content content=<span class="keyword">new</span> Parcel1().new Content();</div><div class="line"><span class="comment">//实例化方式二</span></div><div class="line">Parcel1 parcel1=<span class="keyword">new</span> Parcel1();</div><div class="line">Content content2=parcel1.new Content();</div><div class="line"></div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Content</span></span>&#123;</div><div class="line"><span class="keyword">private</span> <span class="keyword">int</span> a=<span class="number">0</span>;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getA</span><span class="params">()</span></span></div><div class="line">&#123;</div><div class="line"><span class="keyword">return</span> a;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当生成一个内部类对象的时候，此对象会与外部对象建造一种联系，所以能够访问外部对象的所有成员，不需要任何特殊的条件。原因是因为当外部类对象创造一个内部类对象的时候，内部类对象会秘密捕获一个指向外部类对象的引用。</p>
+<a id="more"></a>
+<p>想要直接创造内部类对象必须使用外部类的对象创建该内部类对象，即上述代码的<code>实例化方式1</code>。但是，如果创建的是内部静态类的话，那么内部静态类是不会持有外部类的引用的。</p>
+<hr>
+<h3>内部类与向上转型</h3>
+
+<p>党将内部类向上转型为基类，尤其是转型为一个接口的时候，内部类就有了用武之地，因为内部类能够完全不可见，并且不可用，所以得到的只是指向基类或者接口的引用，所以可以和方便的隐藏实现细节。</p>
+<p>example:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Parcel1</span></span>&#123;</div><div class="line"><span class="comment">//接口一</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Destination</span></span>&#123;</div><div class="line"><span class="function">String <span class="title">read</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="comment">//接口二</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Content</span></span>&#123;</div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">value</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">DestinationDemo</span> <span class="keyword">implements</span> <span class="title">Destination</span></span>&#123;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">read</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"><span class="keyword">return</span> <span class="string">"read"</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"><span class="keyword">protected</span> <span class="class"><span class="keyword">class</span> <span class="title">ContentDemo</span> <span class="keyword">implements</span> <span class="title">Content</span> </span>&#123;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"><span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</div><div class="line">Destination destination=<span class="keyword">new</span> Parcel1().new DestinationDemo();</div><div class="line">destination.read();</div><div class="line">Content content=<span class="keyword">new</span> Parcel1().new ContentDemo();</div><div class="line">content.value();</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>上述代码中特意将<code>DestinationDemo</code>和<code>ContentDemo</code>申明为私有的和保护的，这样一般而言，其他类对他们就没有访问权限，这意味着private(protected)内部类给类的设计者提供了一种途径，通过这种途径可以完全阻止任何依赖于类型的编码，完全隐藏了实现细节。</p>
+<hr>
+<h3>在方法和作用域内的内部类</h3>
+
+<p>可以再一个方法或者作用域内申明内部类，这么做的原因有两个：</p>
+<ul>
+<li>实现了某类型的接口，可以创建并且返回对其的引用</li>
+<li>想要解决一个复杂的问题，想要创建一个类来辅助解决，但又不希望当前的类是公共可用的</li>
+</ul>
+<p>方法中的内部类</p>
+<p>example:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="comment">//代码基础在上一个代码中添加</span></div><div class="line"><span class="function"><span class="keyword">public</span> Destination <span class="title">get</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">DestinationImpl</span> <span class="keyword">implements</span> <span class="title">Destination</span></span>&#123;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">read</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"><span class="keyword">return</span> <span class="string">"DestinationImpl"</span>;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span> DestinationImpl();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> Destination <span class="title">get_two</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">DestinationImpl</span> <span class="keyword">implements</span> <span class="title">Destination</span></span>&#123;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> String <span class="title">read</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"><span class="keyword">return</span> <span class="string">"DestinationImpl"</span>;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span> DestinationImpl();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>DestinationImpl为方法get()的一部分，除了get()方法之外是不能够访问到DestinationImpl的，如果你在get_two()也定义了一个DestinationImpl，是不会有命名冲突的。</p>
+<p>作用域中的内部类</p>
+<p>example:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> Content <span class="title">set</span><span class="params">()</span></span>&#123;</div><div class="line"><span class="keyword">boolean</span> flag=<span class="keyword">true</span>;</div><div class="line"><span class="keyword">if</span> (flag) &#123;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ContentImpl</span> <span class="keyword">implements</span> <span class="title">Content</span></span>&#123;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"><span class="keyword">return</span> <span class="number">1</span>;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span> ContentImpl();</div><div class="line">&#125;<span class="keyword">else</span> &#123;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">ContentImpl1</span> <span class="keyword">implements</span> <span class="title">Content</span></span>&#123;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"><span class="keyword">return</span> <span class="number">2</span>;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span> ContentImpl1();</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<hr>
+<h3>匿名内部类</h3>
+
+<p>example:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> Content <span class="title">getNewContent</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span> Content()&#123;</div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"><span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;     </div><div class="line">&#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这种方式如果是做android开发的应该是很熟悉的，经常会遇到new OnClickListener()的情况，就是对于内部类的运用。通过这种方式返回的引用会被自动向上转型转化成对Content的引用。</p>
+<p>在内名内部类中，会使用默认的构造器来生成Content，如果我们需要一个带有参数的构造的话，那么该如何实现呢？</p>
+<p>example:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> Content <span class="title">getNewContent</span><span class="params">(<span class="keyword">int</span> aa)</span> </span>&#123;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span> Content(aa)&#123;</div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"><span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">&#125;     </div><div class="line">&#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>其实只需要替换new的类型传入对应参数即可。</p>
+<p>一个内部类如果想要使用一个外部类的对象，那么这个对象必须是final的，否则编译器会报错：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> Content <span class="title">getNewContent</span><span class="params">(<span class="keyword">final</span> <span class="keyword">int</span> a)</span> </span>&#123;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span> Content()&#123;</div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"><span class="keyword">return</span> a;</div><div class="line">&#125;     </div><div class="line">&#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果想要在内部类中进行类似构造器的行为，对内部对象进行初始化的工作，则需要使用<strong>实例初始化</strong>的方法，因为匿名内部类是没有构造器的，使用如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> Content <span class="title">getContent5</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span>  Content()&#123;</div><div class="line"><span class="keyword">private</span> Content contentDemo;</div><div class="line">&#123;</div><div class="line">contentDemo=<span class="keyword">new</span> ContentDemo();</div><div class="line">&#125;</div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">value</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"><span class="keyword">return</span> contentDemo.value();</div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>当调用该方法的时候会先执行contentDemo的初始化工作，然后调用返回contentDemo.value()。</p>
+<hr>
+<h3>静态内部类</h3>
+
+<p>如果不需要内部列对象与外部类对象之间有联系，可以使用静态内部类。创建静态内部类意味着：</p>
+<ul>
+<li>创建静态内部类，不需要持有外部类的引用</li>
+<li>不能从静态内部类中访问非静态的外部类对象</li>
+</ul>
+<hr>
+<h3>为什么要内部类</h3>
+
+<p>一般来说，内部类继承自某个类或者实现某个接口，内部类的代码操作创建它的外围类对象，所以可以认为内部类提供了某种进入其外部类的接口。</p>
+<p>如果只是需要持有一个接口的引用，则直接通过外部类实现即可，那么内部类实现一个接口和外部类实现一个接口有什么区别呢？答案是后者不是总能享受到接口带来的方便，有时需要接口的实现，所以使用内部类最重要的原因是：</p>
+<p><strong>每个内部类都能独立的继承一个实现，所以无论外部类是否继承了某个实现，对于内部类而言是没有影响的。如果没有内部类提供的，可以继承多个具体的或者抽象类的能力一些设计与编程问题很难解决，内部类使得多重继承的解决方案变得完整。</strong></p>
+<p>如果有那么一种情境：必须使用一个类中以某种方式实现两个接口，由于接口的灵活性，我们可以选择使用单一类，或者使用内部类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">A</span></span>&#123;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">AA</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">B</span></span>&#123;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">BB</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">AA</span> <span class="keyword">implements</span> <span class="title">A</span>,<span class="title">B</span></span>&#123;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">BB</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">AA</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"></div><div class="line">&#125;&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">BB</span> <span class="keyword">implements</span> <span class="title">B</span></span>&#123;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">BB</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"></div><div class="line">&#125;</div><div class="line"><span class="function">A <span class="title">createA</span><span class="params">()</span></span>&#123;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span> A()&#123;</div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">AA</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"></div><div class="line">&#125;</div><div class="line">&#125;;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>但是如果拥有的是抽象类或者具体的类，而不是借口，那么只能使用内部类来实现多重继承：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">D</span></span>&#123;&#125;</div><div class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">F</span></span>&#123;&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">G</span> <span class="keyword">extends</span> <span class="title">D</span></span>&#123;</div><div class="line"><span class="function">F <span class="title">createF</span><span class="params">()</span></span>&#123;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span> F()&#123;&#125;;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>如果不用解决多重继承的问题，可选择的实现方式很多，自然不需要使用到内部类。但是使用内部类，能够获得一些其他的特性：</p>
+<ol>
+<li>内部类可以有多个实例，每个实例都有自己的状态信息，并且与其外部类对象的信息相互独立</li>
+<li>在单个外部类，可以让多个内部类以布偶同德方式实现同一个接口，或者继承同一个类</li>
+<li>创建内部类对象的时候并不依赖与外部类对象的创建</li>
+</ol>
+<hr>
+<h3>内部类的继承</h3>
+
+<p>因为内部类的构造器必须连接到指向其外部类对象的引用，所以在继承内部类的时候稍显复杂。问题在于指向外部的那个引用必须初始化，如何才能初始化呢：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Outter</span></span>&#123;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Inner</span></span>&#123;&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">InnerImpl</span> <span class="keyword">extends</span> <span class="title">Outter</span>.<span class="title">Inner</span></span>&#123;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="title">InnerImpl</span><span class="params">(Outter outter)</span> </span>&#123;</div><div class="line">outter.<span class="keyword">super</span>();</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>我们必须使用上述的方式来进行初始化。</p>
+<hr>
+<h3>局部内部类</h3>
+
+<p>局部内部类定义在代码块中，最典型的是在一个方法体里。局部内部类不能有访问说明符，因为他不是外部类的一部分，当他可以访问当前代码块内的常量以及外围类所有的成员：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">interface</span> <span class="title">MMMM</span></span>&#123;</div><div class="line"><span class="function"><span class="keyword">void</span> <span class="title">mmm</span><span class="params">()</span></span>;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">public</span> MMMM <span class="title">Param</span><span class="params">()</span></span>&#123;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">A</span> <span class="keyword">implements</span> <span class="title">MMMM</span></span>&#123;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mmm</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span> A();</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">public</span> MMMM <span class="title">Params</span><span class="params">()</span></span>&#123;</div><div class="line"><span class="keyword">return</span> <span class="keyword">new</span> MMMM()&#123;</div><div class="line"></div><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">mmm</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="comment">// TODO Auto-generated method stub</span></div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125;;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>使用局部内部类和匿名内部类实现了这个功能，他们具有相同的行为和能力，那么使用局部内部类的唯一理由就是我们需要一个已命名的构造器，或者需要重载构造器，而匿名内部类只能用于实例初始化。</p>
+<hr>
+<h3>内部类的标识符</h3>
+
+<p>每个类都会产生一个.class文件，其中包含了如何创建该类型的对象的全部信息(此信息产生了一个”meta-class”，叫做class对象)，这些类有严格的命名规则：<strong>外围累的名字，加上”$”，再加上内部类的名字</strong>。那上述代码举例则是:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">Test$A.class   Test$<span class="number">1</span>.class</div></pre></td></tr></table></figure>
+<p>内部类为匿名的，咋会使用一个数字当做标识符。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/内部类/" rel="tag"># 内部类</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/01/10/NestedScrolling研究/" rel="next" title="NestedScrolling And Behavior学习笔记">
+                <i class="fa fa-chevron-left"></i> NestedScrolling And Behavior学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/01/23/Think-in-Java学习笔记三：内部类学习/"
+           data-title="Think-in-Java学习笔记三：内部类学习" data-url="http://yoursite.com/2017/01/23/Think-in-Java学习笔记三：内部类学习/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Jerry Chan" />
+          <p class="site-author-name" itemprop="name">Jerry Chan</p>
+          <p class="site-description motion-element" itemprop="description">In me the tiger sniffes the rose</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">16</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/JerryChan123" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/Jerry_Linnnnnnn" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/annylin0922" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#内部类"><span class="nav-number">1.</span> <span class="nav-text">内部类</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.1.</span> <span class="nav-text">基本用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.2.</span> <span class="nav-text">内部类与向上转型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.3.</span> <span class="nav-text">在方法和作用域内的内部类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.4.</span> <span class="nav-text">匿名内部类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.5.</span> <span class="nav-text">静态内部类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.6.</span> <span class="nav-text">为什么要内部类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.7.</span> <span class="nav-text">内部类的继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.8.</span> <span class="nav-text">局部内部类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.0.9.</span> <span class="nav-text">内部类的标识符</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jerry Chan</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"jerrychan123"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("OtRTTkhYQKMh2ztC9L6czjbP-gzGzoHsz", "dsKHW7hE1MX9u21g5zouUp7R");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+</body>
+</html>
