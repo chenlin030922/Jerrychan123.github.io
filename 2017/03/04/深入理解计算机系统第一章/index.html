@@ -108,7 +108,7 @@ hello文件的生命周期由一个源文件开始，我们利用编辑器创建
 <meta property="og:image" content="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/high_cache.png">
 <meta property="og:image" content="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/zzzz.png">
 <meta property="og:image" content="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/context.png">
-<meta property="og:updated_time" content="2017-03-07T08:16:11.000Z">
+<meta property="og:updated_time" content="2017-03-07T08:18:28.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="深入理解计算机系统第一章">
 <meta name="twitter:description" content="hello文件的周期过程
@@ -414,7 +414,12 @@ hello文件的生命周期由一个源文件开始，我们利用编辑器创建
 <img src="/2017/03/04/深入理解计算机系统第一章/qqq2.png" alt="从磁盘加载可执行文件到主存" title="从磁盘加载可执行文件到主存">
 <p>一旦目标文件hello中的代码和数据被加载到主存，处理器就可使执行hello程序的main程序中的机器语言指令，这些指令将”hello,world/n”字符串中的字节从主存复制到寄存器文件，再从寄存器文件复制到显示设备当中，最终显示在了屏幕上，过程图如下所示：</p>
 <img src="/2017/03/04/深入理解计算机系统第一章/qqq3.png" alt="将输出字符串从内存写到显示器" title="将输出字符串从内存写到显示器">
-<h3>高速缓存<br><br>hello程序的机器指令最初是存放在磁盘上的，程序加载的时候，从磁盘复制到主存中，当CPU运行程序的时候，指令由从主存复制到处理器，这些复制其实就是开销，减缓了程序的“真正的”工作。<br><br>告诉缓存存储器：作为暂时的集结区域，用来存放处理器近期可能会需要的信息：<br><br><img src="/2017/03/04/深入理解计算机系统第一章/high_cache.png" alt="高速缓存存储器" title="高速缓存存储器"><br><br><h3>操作系统管理硬件</h3>
+<h3>高速缓存</h3>
+
+<p>hello程序的机器指令最初是存放在磁盘上的，程序加载的时候，从磁盘复制到主存中，当CPU运行程序的时候，指令由从主存复制到处理器，这些复制其实就是开销，减缓了程序的“真正的”工作。</p>
+<p>告诉缓存存储器：作为暂时的集结区域，用来存放处理器近期可能会需要的信息：</p>
+<img src="/2017/03/04/深入理解计算机系统第一章/high_cache.png" alt="高速缓存存储器" title="高速缓存存储器">
+<h3>操作系统管理硬件</h3>
 
 <img src="/2017/03/04/深入理解计算机系统第一章/zzzz.png" alt="操作系统提供的抽象表示" title="操作系统提供的抽象表示">
 <p>文件是对I/O设备的抽象标识，虚拟存储器是对主存和磁盘I/O的抽象表示，进程则是对CPU，主存和I/O设备的抽象表示。</p>
@@ -434,7 +439,7 @@ hello文件的生命周期由一个源文件开始，我们利用编辑器创建
 </ol>
 <p><strong>文件</strong></p>
 <p>文件上就是字节序列，每个I/O设备，包括键盘，磁盘，显示器，甚至网络，都可以视为文件。</p>
-</h3>
+
       
     </div>
 
@@ -627,27 +632,7 @@ hello文件的生命周期由一个源文件开始，我们利用编辑器创建
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">hello文件的周期过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">处理器解读存储在存储器中的指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text"> 运行hello程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">高速缓存hello程序的机器指令最初是存放在磁盘上的，程序加载的时候，从磁盘复制到主存中，当CPU运行程序的时候，指令由从主存复制到处理器，这些复制其实就是开销，减缓了程序的“真正的”工作。告诉缓存存储器：作为暂时的集结区域，用来存放处理器近期可能会需要的信息：操作系统管理硬件
-
-
-文件是对I/O设备的抽象标识，虚拟存储器是对主存和磁盘I/O的抽象表示，进程则是对CPU，主存和I/O设备的抽象表示。
-进程
-进程是对操作系统的一个正在运行的程序的抽象，一个系统可以运行多个进程，并发运行是指一个进行的指令和另一个进程的指令是交错的进行的，运行的进程数是多于可以运行的他们的CPU的个数，一个CPU并发的执行多个程序实际上是通过进程间切换实现的，这种交错执行的机制称之为上下文切换。下面讨论皆在一个CPU的单处理器系统上。
-操作系统保持跟踪进程运行所需要的所有状态信息，这种状态(上下文)，包括了很多信息，如PC何寄存器当前的值，以及主存的内容。任何一个时刻单处理器只处理一个进程的代码，当要切换进程的啥时候，会进行上下文的切换，即保存当前进程的上下文信息，恢复新进程的上下文，然后把控制权转给新进程，新进程会从上次停止的地方开始。
-
-上图示例两个并发的过程：外壳进程和hello进程，开始只有外壳进程进行，即等待命令行输入，当我们让他运行hello程序的时候，外壳通过调用一个专门的函数，即系统调用，来执行我们的请求，系统调用会将控制权传递给操作系统。操作系统保存外壳进程的上下文，创建一个新的hello进程以及上下文，然后将控制权传递给新的hello进程。hello进程终止后，操作系统恢复外壳进程的上下文，并将控制权传回给他，外壳进程等待下一个命令行输入。
-虚拟服务器
-虚拟服务器是一个抽象的概念，他为每个进程提供了一个假象，即每个进程都在独占使用主存，每个进程看到的是一致的存储器，称为虚拟地址空间。每个进程看到的虚拟地址空间由大量准确定义的区构成，每个区有专门的功能。下面根据地址由低到高依次介绍相关区。
-
-程序代码和数据：对所有进程来说，代码从同一固定地址开始，紧接着适合C全局变量相对应的数据位置，代码和数据区是直接按照可执行目标文件的内容初始化的。
-堆：代码和数据区紧随着运行时堆，代码和数据区是在进程一开始被规定了大小，以C为例，堆在运行时动态拓展和收缩。
-共享库：大约在地址空间中间的一部分是一块用来存放像C标准库和数学库这样共享库的代码和数据区。
-栈：位于用户虚拟地址空间的顶部为用户栈，并一起用它来实现函数调用。
-内核虚拟存储器：内核总是驻留在内存中，是操作系统的一部分，地址空间顶部的区域是为内核保留的，不予许医用程序读写这个区域的内容。
-
-文件
-文件上就是字节序列，每个I/O设备，包括键盘，磁盘，显示器，甚至网络，都可以视为文件。
-</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text">操作系统管理硬件</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">hello文件的周期过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">处理器解读存储在存储器中的指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text"> 运行hello程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">高速缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text">操作系统管理硬件</span></a></li></ol></div>
             
 
           </div>
