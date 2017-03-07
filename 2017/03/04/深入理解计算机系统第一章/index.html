@@ -1,0 +1,926 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="深入理解计算机系统," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="hello文件的周期过程
+
+hello.c
+1234#include &amp;lt;stdio.h&amp;gt;int main()&amp;#123;  printf(&quot;hello ,world\n&quot;);&amp;#125;
+hello文件的生命周期：创建-&amp;gt;系统上运行-&amp;gt;输出消息-&amp;gt;终止
+hello文件的生命周期由一个源文件开始，我们利用编辑器创建并且保存，这就是一个以.c结尾的文本文件，源程序实际上是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入理解计算机系统第一章">
+<meta property="og:url" content="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/index.html">
+<meta property="og:site_name" content="Jerry Chan">
+<meta property="og:description" content="hello文件的周期过程
+
+hello.c
+1234#include &amp;lt;stdio.h&amp;gt;int main()&amp;#123;  printf(&quot;hello ,world\n&quot;);&amp;#125;
+hello文件的生命周期：创建-&amp;gt;系统上运行-&amp;gt;输出消息-&amp;gt;终止
+hello文件的生命周期由一个源文件开始，我们利用编辑器创建并且保存，这就是一个以.c结尾的文本文件，源程序实际上是">
+<meta property="og:image" content="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/hello_lifecycle.png">
+<meta property="og:image" content="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/aaaa.png">
+<meta property="og:image" content="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/qqq1.png">
+<meta property="og:image" content="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/qqq2.png">
+<meta property="og:image" content="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/qqq3.png">
+<meta property="og:image" content="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/high_cache.png">
+<meta property="og:image" content="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/zzzz.png">
+<meta property="og:image" content="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/context.png">
+<meta property="og:updated_time" content="2017-03-07T08:16:11.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深入理解计算机系统第一章">
+<meta name="twitter:description" content="hello文件的周期过程
+
+hello.c
+1234#include &amp;lt;stdio.h&amp;gt;int main()&amp;#123;  printf(&quot;hello ,world\n&quot;);&amp;#125;
+hello文件的生命周期：创建-&amp;gt;系统上运行-&amp;gt;输出消息-&amp;gt;终止
+hello文件的生命周期由一个源文件开始，我们利用编辑器创建并且保存，这就是一个以.c结尾的文本文件，源程序实际上是">
+<meta name="twitter:image" content="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/hello_lifecycle.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/"/>
+
+
+
+
+
+  <title> 深入理解计算机系统第一章 | Jerry Chan </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Jerry Chan</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Android Developer</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Jerry Chan">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Jerry Chan">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Jerry Chan" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                深入理解计算机系统第一章
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-04T22:14:13+08:00">
+                2017-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2017/03/04/深入理解计算机系统第一章/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/04/深入理解计算机系统第一章/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/04/深入理解计算机系统第一章/" class="leancloud_visitors" data-flag-title="深入理解计算机系统第一章">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3>hello文件的周期过程</h3>
+
+<p>hello.c</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></div><div class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</div><div class="line">  <span class="built_in">printf</span>(<span class="string">"hello ,world\n"</span>);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>hello文件的生命周期：创建-&gt;系统上运行-&gt;输出消息-&gt;终止</p>
+<p>hello文件的生命周期由一个源文件开始，我们利用编辑器创建并且保存，这就是一个以.c结尾的文本文件，源程序实际上是由值0到1组成的位(bit)序列，8个位被组织成一组，称为字节。</p>
+<p>hello.c以字节序列的方式存储在文件当中，每个字节都由一个整数值进行对应，即ASCII码来对应。</p>
+<p>hello程序的生命周期从一个C语言开始，为了在系统上运行hello.c,每条C语言语句都会被转化成低级机器语言，然后这些指令会按照一种<strong>可执行目标程序</strong>的格式打包，以<strong>二进制磁盘文件</strong>的形式存放起来。<strong>目标程序也称为可执行文件</strong></p>
+<a id="more"></a>
+<p>从源文件到目标文件的转换一般是由编译器来进行的，C语言的编译器是GCC编译器，他读取hello.c文件并把它翻译成一个目标文件hello，这个翻译的过程分四个阶段，如图所示：</p>
+<img src="/2017/03/04/深入理解计算机系统第一章/hello_lifecycle.png" alt="hello.c生命周期" title="hello.c生命周期">
+<ol>
+<li>预处理阶段：预处理器(cpp)会根据字符#开头的命令，修改原始的程序，hello.c中的第一行Include命令会告诉cpp去读系统头文件stido.h的内容，然后插入到程序文本当中，然后就得到了另一个c程序，通常以.i为拓展名。</li>
+<li>编译阶段：编译器将hello.i文件翻译成hello.s文件，编译器包含了一个<strong>汇编语言程序</strong>，汇编语言程序中的每条语句都以一种标准的文本格式确切的描述了一个低级机器语言。</li>
+<li>汇编阶段：汇编语言程序会将hello.s翻译成机器语言，把这些指令打包成一种叫做<strong>可重定位目标程序</strong>的格式，并将结果保存在目标文件hello.o中，hello.o是一个二进制文件，他的字节编码是机器语言指令而不是字符。</li>
+<li>链接阶段：hello程序调用了printf函数，他是每个C编译器都会提供的标准C库中的一个函数，printf函数存在于一个名为printf.o的单独编译好的目标文件中，而这个文件必须以某种方式合并到我们的hello.o中。链接器(ld)就是负责处理这种合并，结果就得到了hello文件，他是一个<strong>可执行文件</strong>，可以被系统加载到内存由系统执行。</li>
+</ol>
+<h3>处理器解读存储在存储器中的指令</h3>
+
+<p>经过上面的步骤,hello.c成功的被编译系统解释成了可执行文件hello，并且存放在了磁盘上。</p>
+<p>系统硬件组成：</p>
+<img src="/2017/03/04/深入理解计算机系统第一章/aaaa.png" alt="硬件组成" title="硬件组成">
+<ol>
+<li>总线(I/O bus)：贯穿整个系统的一组电子管道，负责携带信息字条并且负责在各个部件传输</li>
+<li>I/O设备：图片中的I/O设备包括四个：键盘，鼠标，显示器，以及长期存储数据和程序的磁盘。</li>
+<li>主存(Main memory)：主存是一个临时存储设备，在处理器处理程序时候，用来放程序和程序处理的数据。从物理上说，主存是一个动态随机存取储存器(DRAM)x芯片组成。</li>
+<li>处理器(CPU)：解释存储在主存中的指令的引擎。CPU的核心是一个字长的存储器(或者寄存器(Register file))，称为程序计数器(PC)，任何时刻PC都指向主存中的某条机器语言地址。从开始到断电，CPU一直不断的处理PC指向的指令，再更新PC，使其指向下一条指令。CPU从PC指向的讯想起处读取指令，解释指令的为，执行该指令指示的简单操作，然后更新PC，让PC指向下一条命令。</li>
+</ol>
+<p>在CPU中简单的操作并不多，而且操作是围绕着主存，寄存器文件和算术/逻辑单元(ALU)进行的。寄存器是一个小的存储器，有一些1字长的寄存器组成，每个寄存器都有唯一的名字，ALU计算新的数据和地址值，下面举简单例子：</p>
+<ol>
+<li>加载：把一个字节或者一个字从主存复制到寄存器，以覆盖寄存器原来的内容。</li>
+<li>存储：把一个字节或者一个字从寄存器复制到主存的某个位置，以覆盖这个位置上的内容。</li>
+<li>操作：把两个寄存器的内容复制到ALU，ALU对这个字做算术操作，并将结果存放到一个寄存器中，已覆盖原来的内容。</li>
+<li>跳转：从一个指令本身抽取一个字，并将这个字复制到PC中，以覆盖原来的值。</li>
+</ol>
+<h3> 运行hello程序</h3>
+
+<p>我们在输入./hello的时候,外壳程序会将字符逐一读入寄存器，再把它放到存储器当中，过程图如下所示：</p>
+<img src="/2017/03/04/深入理解计算机系统第一章/qqq1.png" alt="键盘上读取hello命令" title="键盘上读取hello命令">
+<p>当我们回敲enter键的时候，外壳程序知道我们已经结束了命令的输入，然后从外壳执行一系列的指令来加载可执行的hello文件，将hello目标文件中的代码和数据从磁盘复制到主存(利用DMA技术，即直接存储器读取，数据可以不通过处理器而直接从磁盘到达主存)，数据包括最终会被输出的字符串“hello,world”。过程如图所示：</p>
+<img src="/2017/03/04/深入理解计算机系统第一章/qqq2.png" alt="从磁盘加载可执行文件到主存" title="从磁盘加载可执行文件到主存">
+<p>一旦目标文件hello中的代码和数据被加载到主存，处理器就可使执行hello程序的main程序中的机器语言指令，这些指令将”hello,world/n”字符串中的字节从主存复制到寄存器文件，再从寄存器文件复制到显示设备当中，最终显示在了屏幕上，过程图如下所示：</p>
+<img src="/2017/03/04/深入理解计算机系统第一章/qqq3.png" alt="将输出字符串从内存写到显示器" title="将输出字符串从内存写到显示器">
+<h3>高速缓存<br><br>hello程序的机器指令最初是存放在磁盘上的，程序加载的时候，从磁盘复制到主存中，当CPU运行程序的时候，指令由从主存复制到处理器，这些复制其实就是开销，减缓了程序的“真正的”工作。<br><br>告诉缓存存储器：作为暂时的集结区域，用来存放处理器近期可能会需要的信息：<br><br><img src="/2017/03/04/深入理解计算机系统第一章/high_cache.png" alt="高速缓存存储器" title="高速缓存存储器"><br><br><h3>操作系统管理硬件</h3>
+
+<img src="/2017/03/04/深入理解计算机系统第一章/zzzz.png" alt="操作系统提供的抽象表示" title="操作系统提供的抽象表示">
+<p>文件是对I/O设备的抽象标识，虚拟存储器是对主存和磁盘I/O的抽象表示，进程则是对CPU，主存和I/O设备的抽象表示。</p>
+<p><strong>进程</strong></p>
+<p>进程是对操作系统的一个正在运行的程序的抽象，一个系统可以运行多个进程，<strong>并发运行是指一个进行的指令和另一个进程的指令是交错的进行的</strong>，运行的进程数是多于可以运行的他们的CPU的个数，一个CPU并发的执行多个程序实际上是通过进程间切换实现的，这种交错执行的机制称之为<strong>上下文切换</strong>。下面讨论皆在一个CPU的单处理器系统上。</p>
+<p>操作系统保持跟踪进程运行所需要的所有状态信息，这种状态(上下文)，包括了很多信息，如PC何寄存器当前的值，以及主存的内容。任何一个时刻单处理器只处理一个进程的代码，<strong>当要切换进程的啥时候，会进行上下文的切换，即保存当前进程的上下文信息，恢复新进程的上下文，然后把控制权转给新进程</strong>，新进程会从上次停止的地方开始。</p>
+<img src="/2017/03/04/深入理解计算机系统第一章/context.png" alt="上下文切换" title="上下文切换">
+<p>上图示例两个并发的过程：外壳进程和hello进程，开始只有外壳进程进行，即等待命令行输入，当我们让他运行hello程序的时候，外壳通过调用一个专门的函数，即系统调用，来执行我们的请求，系统调用会将控制权传递给操作系统。操作系统保存外壳进程的上下文，创建一个新的hello进程以及上下文，然后将控制权传递给新的hello进程。hello进程终止后，操作系统恢复外壳进程的上下文，并将控制权传回给他，外壳进程等待下一个命令行输入。</p>
+<p><strong>虚拟服务器</strong></p>
+<p>虚拟服务器是一个抽象的概念，他为每个进程提供了一个假象，即每个进程都在独占使用主存，每个进程看到的是一致的存储器，称为<strong><em>虚拟地址空间</em></strong>。每个进程看到的虚拟地址空间由大量准确定义的区构成，每个区有专门的功能。下面根据地址由低到高依次介绍相关区。</p>
+<ol>
+<li>程序代码和数据：对所有进程来说，代码从同一固定地址开始，紧接着适合C全局变量相对应的数据位置，代码和数据区是直接按照可执行目标文件的内容初始化的。</li>
+<li>堆：代码和数据区紧随着运行时堆，代码和数据区是在进程一开始被规定了大小，以C为例，堆在运行时动态拓展和收缩。</li>
+<li>共享库：大约在地址空间中间的一部分是一块用来存放像C标准库和数学库这样共享库的代码和数据区。</li>
+<li>栈：位于用户虚拟地址空间的顶部为用户栈，并一起用它来实现函数调用。</li>
+<li>内核虚拟存储器：内核总是驻留在内存中，是操作系统的一部分，地址空间顶部的区域是为内核保留的，不予许医用程序读写这个区域的内容。</li>
+</ol>
+<p><strong>文件</strong></p>
+<p>文件上就是字节序列，每个I/O设备，包括键盘，磁盘，显示器，甚至网络，都可以视为文件。</p>
+</h3>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/深入理解计算机系统/" rel="tag"># 深入理解计算机系统</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/02/22/疑难杂症汇总/" rel="next" title="疑难杂症汇总">
+                <i class="fa fa-chevron-left"></i> 疑难杂症汇总
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/04/深入理解计算机系统第一章/"
+           data-title="深入理解计算机系统第一章" data-url="http://yoursite.com/2017/03/04/深入理解计算机系统第一章/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Jerry Chan" />
+          <p class="site-author-name" itemprop="name">Jerry Chan</p>
+          <p class="site-description motion-element" itemprop="description">In me the tiger sniffes the rose</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/JerryChan123" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/Jerry_Linnnnnnn" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/annylin0922" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">1.</span> <span class="nav-text">hello文件的周期过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">2.</span> <span class="nav-text">处理器解读存储在存储器中的指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">3.</span> <span class="nav-text"> 运行hello程序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">4.</span> <span class="nav-text">高速缓存hello程序的机器指令最初是存放在磁盘上的，程序加载的时候，从磁盘复制到主存中，当CPU运行程序的时候，指令由从主存复制到处理器，这些复制其实就是开销，减缓了程序的“真正的”工作。告诉缓存存储器：作为暂时的集结区域，用来存放处理器近期可能会需要的信息：操作系统管理硬件
+
+
+文件是对I/O设备的抽象标识，虚拟存储器是对主存和磁盘I/O的抽象表示，进程则是对CPU，主存和I/O设备的抽象表示。
+进程
+进程是对操作系统的一个正在运行的程序的抽象，一个系统可以运行多个进程，并发运行是指一个进行的指令和另一个进程的指令是交错的进行的，运行的进程数是多于可以运行的他们的CPU的个数，一个CPU并发的执行多个程序实际上是通过进程间切换实现的，这种交错执行的机制称之为上下文切换。下面讨论皆在一个CPU的单处理器系统上。
+操作系统保持跟踪进程运行所需要的所有状态信息，这种状态(上下文)，包括了很多信息，如PC何寄存器当前的值，以及主存的内容。任何一个时刻单处理器只处理一个进程的代码，当要切换进程的啥时候，会进行上下文的切换，即保存当前进程的上下文信息，恢复新进程的上下文，然后把控制权转给新进程，新进程会从上次停止的地方开始。
+
+上图示例两个并发的过程：外壳进程和hello进程，开始只有外壳进程进行，即等待命令行输入，当我们让他运行hello程序的时候，外壳通过调用一个专门的函数，即系统调用，来执行我们的请求，系统调用会将控制权传递给操作系统。操作系统保存外壳进程的上下文，创建一个新的hello进程以及上下文，然后将控制权传递给新的hello进程。hello进程终止后，操作系统恢复外壳进程的上下文，并将控制权传回给他，外壳进程等待下一个命令行输入。
+虚拟服务器
+虚拟服务器是一个抽象的概念，他为每个进程提供了一个假象，即每个进程都在独占使用主存，每个进程看到的是一致的存储器，称为虚拟地址空间。每个进程看到的虚拟地址空间由大量准确定义的区构成，每个区有专门的功能。下面根据地址由低到高依次介绍相关区。
+
+程序代码和数据：对所有进程来说，代码从同一固定地址开始，紧接着适合C全局变量相对应的数据位置，代码和数据区是直接按照可执行目标文件的内容初始化的。
+堆：代码和数据区紧随着运行时堆，代码和数据区是在进程一开始被规定了大小，以C为例，堆在运行时动态拓展和收缩。
+共享库：大约在地址空间中间的一部分是一块用来存放像C标准库和数学库这样共享库的代码和数据区。
+栈：位于用户虚拟地址空间的顶部为用户栈，并一起用它来实现函数调用。
+内核虚拟存储器：内核总是驻留在内存中，是操作系统的一部分，地址空间顶部的区域是为内核保留的，不予许医用程序读写这个区域的内容。
+
+文件
+文件上就是字节序列，每个I/O设备，包括键盘，磁盘，显示器，甚至网络，都可以视为文件。
+</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#undefined"><span class="nav-number">5.</span> <span class="nav-text">操作系统管理硬件</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jerry Chan</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"jerrychan123"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("OtRTTkhYQKMh2ztC9L6czjbP-gzGzoHsz", "dsKHW7hE1MX9u21g5zouUp7R");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+</body>
+</html>
