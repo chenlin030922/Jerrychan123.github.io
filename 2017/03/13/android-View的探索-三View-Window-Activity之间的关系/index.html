@@ -1,0 +1,843 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="android," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="日常开发中我们接触到的主要是View以及Activity，并且在此基础上开发，但是其实View跟Window是离不开的，所以本文旨在理清View,Window以及Activity之间的关系。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="android-View的探索-三View,Window,Activity之间的关系">
+<meta property="og:url" content="http://yoursite.com/2017/03/13/android-View的探索-三View-Window-Activity之间的关系/index.html">
+<meta property="og:site_name" content="Jerry Chan">
+<meta property="og:description" content="日常开发中我们接触到的主要是View以及Activity，并且在此基础上开发，但是其实View跟Window是离不开的，所以本文旨在理清View,Window以及Activity之间的关系。">
+<meta property="og:image" content="http://yoursite.com/2017/03/13/android-View的探索-三View-Window-Activity之间的关系/ggg.png">
+<meta property="og:updated_time" content="2017-03-13T02:39:19.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="android-View的探索-三View,Window,Activity之间的关系">
+<meta name="twitter:description" content="日常开发中我们接触到的主要是View以及Activity，并且在此基础上开发，但是其实View跟Window是离不开的，所以本文旨在理清View,Window以及Activity之间的关系。">
+<meta name="twitter:image" content="http://yoursite.com/2017/03/13/android-View的探索-三View-Window-Activity之间的关系/ggg.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/03/13/android-View的探索-三View-Window-Activity之间的关系/"/>
+
+
+
+
+
+  <title> android-View的探索-三View,Window,Activity之间的关系 | Jerry Chan </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Jerry Chan</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">Android Developer</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/03/13/android-View的探索-三View-Window-Activity之间的关系/">
+
+  <span style="display:none" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Jerry Chan">
+    <meta itemprop="description" content="">
+    <meta itemprop="image" content="/images/avatar.jpg">
+  </span>
+
+  <span style="display:none" itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+    <meta itemprop="name" content="Jerry Chan">
+    <span style="display:none" itemprop="logo" itemscope itemtype="http://schema.org/ImageObject">
+      <img style="display:none;" itemprop="url image" alt="Jerry Chan" src="">
+    </span>
+  </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                android-View的探索-三View,Window,Activity之间的关系
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-03-13T10:35:38+08:00">
+                2017-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+              <span class="post-meta-divider">|</span>
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Android源码研究/" itemprop="url" rel="index">
+                    <span itemprop="name">Android源码研究</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <a href="/2017/03/13/android-View的探索-三View-Window-Activity之间的关系/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2017/03/13/android-View的探索-三View-Window-Activity之间的关系/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+             <span id="/2017/03/13/android-View的探索-三View-Window-Activity之间的关系/" class="leancloud_visitors" data-flag-title="android-View的探索-三View,Window,Activity之间的关系">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               <span class="post-meta-item-text">阅读次数 </span>
+               <span class="leancloud-visitors-count"></span>
+              </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>日常开发中我们接触到的主要是View以及Activity，并且在此基础上开发，但是其实View跟Window是离不开的，所以本文旨在理清View,Window以及Activity之间的关系。</p>
+<hr>
+<a id="more"></a>
+<p>在Activity中，我们通过setContentView()方法将View与Activity进行挂钩起来,关于<a href="https://jerrychan123.github.io/2016/12/09/android-View%E7%9A%84%E6%8E%A2%E7%B4%A2-%E4%B8%80-setContentView-%E8%BF%87%E7%A8%8B%E7%A0%94%E7%A9%B6/" target="_blank" rel="external">setContentView()的源码分析</a>可以看我写的文章， 这里就不详细在做介绍，要找到View,Window,Activity三者之间的关系，我们需要从Activity实例化的地方开始进行看起，当我们startActivity()的时候会最终回调到<code>ActivityThread</code>的名为<code>H</code>的handler类中，在类中会调用到<code>handleLaunchActivity(...)</code>，在<code>handleLaunchActivity(...)</code>中会调用<code>performLaunchActivity(..)</code>来获取一个新的Activity实例，那么主要研究的目标就在于当前方法中：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">private</span> Activity <span class="title">performLaunchActivity</span><span class="params">(ActivityClientRecord r, Intent customIntent)</span> </span>&#123;</div><div class="line">...</div><div class="line">Activity activity = <span class="keyword">null</span>;</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">java.lang.ClassLoader cl = r.packageInfo.getClassLoader();</div><div class="line"><span class="comment">//使用反射获得要启动的activity对象</span></div><div class="line">activity = mInstrumentation.newActivity(</div><div class="line">cl, component.getClassName(), r.intent);</div><div class="line">...</div><div class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">...</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">...</div><div class="line"><span class="keyword">if</span> (activity != <span class="keyword">null</span>) &#123;</div><div class="line"><span class="comment">//创建关联的Context</span></div><div class="line">Context appContext = createBaseContextForActivity(r, activity);</div><div class="line">CharSequence title = r.activityInfo.loadLabel(appContext.getPackageManager());</div><div class="line">Configuration config = <span class="keyword">new</span> Configuration(mCompatConfiguration);</div><div class="line"><span class="keyword">if</span> (DEBUG_CONFIGURATION) Slog.v(TAG, <span class="string">"Launching activity "</span></div><div class="line">+ r.activityInfo.name + <span class="string">" with config "</span> + config);</div><div class="line"><span class="comment">//将Context等相关信息attach到Activity中</span></div><div class="line">activity.attach(appContext, <span class="keyword">this</span>, getInstrumentation(), r.token,</div><div class="line">r.ident, app, r.intent, r.activityInfo, title, r.parent,</div><div class="line">r.embeddedID, r.lastNonConfigurationInstances, config,</div><div class="line">r.referrer, r.voiceInteractor);</div><div class="line"></div><div class="line">...</div><div class="line"><span class="comment">//调用onCreate()方法</span></div><div class="line"><span class="keyword">if</span> (r.isPersistable()) &#123;</div><div class="line">mInstrumentation.callActivityOnCreate(activity, r.state, r.persistentState);</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">mInstrumentation.callActivityOnCreate(activity, r.state);</div><div class="line">&#125;</div><div class="line">...</div><div class="line">r.activity = activity;</div><div class="line">r.paused = <span class="keyword">true</span>;</div><div class="line"></div><div class="line">mActivities.put(r.token, r);</div><div class="line"></div><div class="line">&#125; <span class="keyword">catch</span> (SuperNotCalledException e) &#123;</div><div class="line"><span class="keyword">throw</span> e;</div><div class="line"></div><div class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line"><span class="keyword">if</span> (!mInstrumentation.onException(activity, e)) &#123;</div><div class="line"><span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(</div><div class="line"><span class="string">"Unable to start activity "</span> + component</div><div class="line">+ <span class="string">": "</span> + e.toString(), e);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">return</span> activity;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在<code>performLaunchActivity（...）</code>中主要就是对Activity的实例化，然后调用onCreate(..)方法，其中在上述步骤中有个<code>activity.attach(...)</code>方法中会新建一个Window对象用来存放Activity的各种View：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">attach</span><span class="params">(Context context, ActivityThread aThread,</span></span></div><div class="line">Instrumentation instr, IBinder token, <span class="keyword">int</span> ident,</div><div class="line">Application application, Intent intent, ActivityInfo info,</div><div class="line">CharSequence title, Activity parent, String id,</div><div class="line">NonConfigurationInstances lastNonConfigurationInstances,</div><div class="line">Configuration config, String referrer, IVoiceInteractor voiceInteractor) &#123;</div><div class="line">attachBaseContext(context);</div><div class="line"></div><div class="line">mFragments.attachHost(<span class="keyword">null</span> <span class="comment">/*parent*/</span>);</div><div class="line"><span class="comment">//新建一个Window对象</span></div><div class="line">mWindow = <span class="keyword">new</span> PhoneWindow(<span class="keyword">this</span>);</div><div class="line">mWindow.setCallback(<span class="keyword">this</span>);</div><div class="line">mWindow.setOnWindowDismissedCallback(<span class="keyword">this</span>);</div><div class="line">mWindow.getLayoutInflater().setPrivateFactory(<span class="keyword">this</span>);</div><div class="line"><span class="keyword">if</span> (info.softInputMode != WindowManager.LayoutParams.SOFT_INPUT_STATE_UNSPECIFIED) &#123;</div><div class="line">mWindow.setSoftInputMode(info.softInputMode);</div><div class="line">&#125;</div><div class="line"><span class="keyword">if</span> (info.uiOptions != <span class="number">0</span>) &#123;</div><div class="line">mWindow.setUiOptions(info.uiOptions);</div><div class="line">&#125;</div><div class="line">mUiThread = Thread.currentThread();</div><div class="line"></div><div class="line">mMainThread = aThread;</div><div class="line">mInstrumentation = instr;</div><div class="line">mToken = token;</div><div class="line">mIdent = ident;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在代码中其实可以看见新建的Window对象是一个PhoneWindow对象，其实在<a href="https://jerrychan123.github.io/2016/12/09/android-View%E7%9A%84%E6%8E%A2%E7%B4%A2-%E4%B8%80-setContentView-%E8%BF%87%E7%A8%8B%E7%A0%94%E7%A9%B6/" target="_blank" rel="external">setContentView()的源码分析</a>的分析当中已经知道，settContentView()方法最终是调用了PhoneWindow中的setContentView()方法进行设置,其中的步骤是：</p>
+<ul>
+<li>启动一个DecorView(本质是FrameLayout)对象</li>
+<li>调用LayoutInflater进行解析xml文件，解析完成后添加到DecorView当中</li>
+</ul>
+<p>这里的话就已经将我们的View解析并且添加到DecorView当中。</p>
+<p>在<code>handleLaunchActivity(...)</code>中调用<code>performLaunchActivity(..)</code>完后会接着调用<code>handleResumeActivity(...)</code>来继续处理Activity的初始化后的相关操作：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">void</span> <span class="title">handleResumeActivity</span><span class="params">(IBinder token,</span></span></div><div class="line"><span class="keyword">boolean</span> clearHide, <span class="keyword">boolean</span> isForward, <span class="keyword">boolean</span> reallyResume) &#123;</div><div class="line">...</div><div class="line"><span class="comment">//获取ActivityClientRecord，并且执行onResume()方法</span></div><div class="line">ActivityClientRecord r = performResumeActivity(token, clearHide);</div><div class="line"><span class="keyword">if</span> (r != <span class="keyword">null</span>) &#123;</div><div class="line"><span class="comment">//这里的r.activity就是我们在performLaunchActivity()或得到的activity实例</span></div><div class="line"><span class="keyword">final</span> Activity a = r.activity;</div><div class="line"><span class="comment">// If the window hasn't yet been added to the window manager,</span></div><div class="line"><span class="comment">// and this guy didn't finish itself or start another activity,</span></div><div class="line"><span class="comment">// then go ahead and add the window.</span></div><div class="line"><span class="comment">//这里的mStartedActivity标志着用户是否调用了startActivityForResult()方法，如果返回true，说明原Activity不会销毁。</span></div><div class="line"><span class="keyword">boolean</span> willBeVisible = !a.mStartedActivity;</div><div class="line"><span class="keyword">if</span> (!willBeVisible) &#123;</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">willBeVisible = ActivityManagerNative.getDefault().willActivityBeVisible(</div><div class="line">a.getActivityToken());</div><div class="line">&#125; <span class="keyword">catch</span> (RemoteException e) &#123;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"><span class="comment">//startActivity()</span></div><div class="line"><span class="keyword">if</span> (r.window == <span class="keyword">null</span> &amp;&amp; !a.mFinished &amp;&amp; willBeVisible) &#123;</div><div class="line">r.window = r.activity.getWindow();</div><div class="line">View decor = r.window.getDecorView();</div><div class="line">decor.setVisibility(View.INVISIBLE);</div><div class="line">ViewManager wm = a.getWindowManager();</div><div class="line">WindowManager.LayoutParams l = r.window.getAttributes();</div><div class="line">a.mDecor = decor;</div><div class="line">l.type = WindowManager.LayoutParams.TYPE_BASE_APPLICATION;</div><div class="line">l.softInputMode |= forwardBit;</div><div class="line"><span class="keyword">if</span> (a.mVisibleFromClient) &#123;</div><div class="line">a.mWindowAdded = <span class="keyword">true</span>;</div><div class="line"><span class="comment">//添加到windowManager当中</span></div><div class="line">wm.addView(decor, l);</div><div class="line">&#125;</div><div class="line">...</div><div class="line"></div><div class="line"><span class="comment">// The window is now visible if it has been added, we are not</span></div><div class="line"><span class="comment">// simply finishing, and we are not starting another activity.</span></div><div class="line"><span class="keyword">if</span> (!r.activity.mFinished &amp;&amp; willBeVisible</div><div class="line">&amp;&amp; r.activity.mDecor != <span class="keyword">null</span> &amp;&amp; !r.hideForNow) &#123;</div><div class="line"><span class="keyword">if</span> (r.newConfig != <span class="keyword">null</span>) &#123;</div><div class="line">r.tmpConfig.setTo(r.newConfig);</div><div class="line"><span class="keyword">if</span> (r.overrideConfig != <span class="keyword">null</span>) &#123;</div><div class="line">r.tmpConfig.updateFrom(r.overrideConfig);</div><div class="line">&#125;</div><div class="line"><span class="keyword">if</span> (DEBUG_CONFIGURATION) Slog.v(TAG, <span class="string">"Resuming activity "</span></div><div class="line">+ r.activityInfo.name + <span class="string">" with newConfig "</span> + r.tmpConfig);</div><div class="line">performConfigurationChanged(r.activity, r.tmpConfig);</div><div class="line">freeTextLayoutCachesIfNeeded(r.activity.mCurrentConfig.diff(r.tmpConfig));</div><div class="line">r.newConfig = <span class="keyword">null</span>;</div><div class="line">&#125;</div><div class="line"><span class="keyword">if</span> (localLOGV) Slog.v(TAG, <span class="string">"Resuming "</span> + r + <span class="string">" with isForward="</span></div><div class="line">+ isForward);</div><div class="line">WindowManager.LayoutParams l = r.window.getAttributes();</div><div class="line"><span class="keyword">if</span> ((l.softInputMode</div><div class="line">&amp; WindowManager.LayoutParams.SOFT_INPUT_IS_FORWARD_NAVIGATION)</div><div class="line">!= forwardBit) &#123;</div><div class="line">l.softInputMode = (l.softInputMode</div><div class="line">&amp; (~WindowManager.LayoutParams.SOFT_INPUT_IS_FORWARD_NAVIGATION))</div><div class="line">| forwardBit;</div><div class="line"><span class="keyword">if</span> (r.activity.mVisibleFromClient) &#123;</div><div class="line">ViewManager wm = a.getWindowManager();</div><div class="line">View decor = r.window.getDecorView();</div><div class="line">wm.updateViewLayout(decor, l);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">r.activity.mVisibleFromServer = <span class="keyword">true</span>;</div><div class="line">mNumVisibleActivities++;</div><div class="line"><span class="keyword">if</span> (r.activity.mVisibleFromClient) &#123;</div><div class="line">r.activity.makeVisible();</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">if</span> (!r.onlyLocalRequest) &#123;</div><div class="line">r.nextIdle = mNewActivities;</div><div class="line">mNewActivities = r;</div><div class="line"><span class="keyword">if</span> (localLOGV) Slog.v(</div><div class="line">TAG, <span class="string">"Scheduling idle handler for "</span> + r);</div><div class="line">Looper.myQueue().addIdleHandler(<span class="keyword">new</span> Idler());</div><div class="line">&#125;</div><div class="line">r.onlyLocalRequest = <span class="keyword">false</span>;</div><div class="line"></div><div class="line"><span class="comment">// Tell the activity manager we have resumed.</span></div><div class="line"><span class="keyword">if</span> (reallyResume) &#123;</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">ActivityManagerNative.getDefault().activityResumed(token);</div><div class="line">&#125; <span class="keyword">catch</span> (RemoteException ex) &#123;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line"><span class="comment">// If an exception was thrown when trying to resume, then</span></div><div class="line"><span class="comment">// just end this activity.</span></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">ActivityManagerNative.getDefault()</div><div class="line">.finishActivity(token, Activity.RESULT_CANCELED, <span class="keyword">null</span>, <span class="keyword">false</span>);</div><div class="line">&#125; <span class="keyword">catch</span> (RemoteException ex) &#123;</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><code>handleResumeActivity(...)</code>中会调用wm.addView(…)方法，这个wm其实现类最终是WindowManagerGloal，因此我们只需要其addView方法就就可：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addView</span><span class="params">(View view, ViewGroup.LayoutParams params,</span></span></div><div class="line">Display display, Window parentWindow) &#123;</div><div class="line">...</div><div class="line"><span class="comment">//新建一个ViewRootImpl</span></div><div class="line">root = <span class="keyword">new</span> ViewRootImpl(view.getContext(), display);</div><div class="line"></div><div class="line">view.setLayoutParams(wparams);</div><div class="line"></div><div class="line">mViews.add(view);</div><div class="line">mRoots.add(root);</div><div class="line">mParams.add(wparams);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// do this last because it fires off messages to start doing things</span></div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line"><span class="comment">//将View设置到root当中</span></div><div class="line">root.setView(view, wparams, panelParentView);</div><div class="line">&#125; <span class="keyword">catch</span> (RuntimeException e) &#123;</div><div class="line"><span class="comment">// BadTokenException or InvalidDisplayException, clean up.</span></div><div class="line"><span class="keyword">synchronized</span> (mLock) &#123;</div><div class="line"><span class="keyword">final</span> <span class="keyword">int</span> index = findViewLocked(view, <span class="keyword">false</span>);</div><div class="line"><span class="keyword">if</span> (index &gt;= <span class="number">0</span>) &#123;</div><div class="line">removeViewLocked(index, <span class="keyword">true</span>);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">throw</span> e;</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>每一个Activity的视图在新建的时候会同时创建一个ViewRootImpl，即<strong>一个Window对应一个ViewRoot对应一个View</strong>,在ViewRootImpl中会将View通过<code>root.setView(view, wparams, panelParentView)</code>方法设置进去，那么主要的方法就在setView(…)中:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div></pre></td><td class="code"><pre><div class="line">ViewRootImpl.<span class="function">java</span></div><div class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setView</span><span class="params">(View view, WindowManager.LayoutParams attrs, View panelParentView)</span> &#123;</div><div class="line"><span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</div><div class="line"><span class="keyword">if</span> (mView == <span class="keyword">null</span>) &#123;</div><div class="line">mView = view;</div><div class="line"></div><div class="line">mAttachInfo.mDisplayState = mDisplay.getState();</div><div class="line">mDisplayManager.registerDisplayListener(mDisplayListener, mHandler);</div><div class="line"></div><div class="line">mViewLayoutDirectionInitial = mView.getRawLayoutDirection();</div><div class="line">mFallbackEventHandler.setView(view);</div><div class="line">mWindowAttributes.copyFrom(attrs);</div><div class="line"><span class="keyword">if</span> (mWindowAttributes.packageName == <span class="keyword">null</span>) &#123;</div><div class="line">mWindowAttributes.packageName = mBasePackageName;</div><div class="line">&#125;</div><div class="line">attrs = mWindowAttributes;</div><div class="line"><span class="comment">// Keep track of the actual window flags supplied by the client.</span></div><div class="line">mClientWindowLayoutFlags = attrs.flags;</div><div class="line"></div><div class="line">setAccessibilityFocus(<span class="keyword">null</span>, <span class="keyword">null</span>);</div><div class="line"></div><div class="line"><span class="keyword">if</span> (view <span class="keyword">instanceof</span> RootViewSurfaceTaker) &#123;</div><div class="line">mSurfaceHolderCallback =</div><div class="line">((RootViewSurfaceTaker)view).willYouTakeTheSurface();</div><div class="line"><span class="keyword">if</span> (mSurfaceHolderCallback != <span class="keyword">null</span>) &#123;</div><div class="line">mSurfaceHolder = <span class="keyword">new</span> TakenSurfaceHolder();</div><div class="line">mSurfaceHolder.setFormat(PixelFormat.UNKNOWN);</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="comment">// Compute surface insets required to draw at specified Z value.</span></div><div class="line"><span class="comment">// <span class="doctag">TODO:</span> Use real shadow insets for a constant max Z.</span></div><div class="line"><span class="keyword">if</span> (!attrs.hasManualSurfaceInsets) &#123;</div><div class="line"><span class="keyword">final</span> <span class="keyword">int</span> surfaceInset = (<span class="keyword">int</span>) Math.ceil(view.getZ() * <span class="number">2</span>);</div><div class="line">attrs.surfaceInsets.set(surfaceInset, surfaceInset, surfaceInset, surfaceInset);</div><div class="line">&#125;</div><div class="line"></div><div class="line">CompatibilityInfo compatibilityInfo = mDisplayAdjustments.getCompatibilityInfo();</div><div class="line">mTranslator = compatibilityInfo.getTranslator();</div><div class="line"></div><div class="line"><span class="comment">// If the application owns the surface, don't enable hardware acceleration</span></div><div class="line"><span class="keyword">if</span> (mSurfaceHolder == <span class="keyword">null</span>) &#123;</div><div class="line">enableHardwareAcceleration(attrs);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">boolean</span> restore = <span class="keyword">false</span>;</div><div class="line"><span class="keyword">if</span> (mTranslator != <span class="keyword">null</span>) &#123;</div><div class="line">mSurface.setCompatibilityTranslator(mTranslator);</div><div class="line">restore = <span class="keyword">true</span>;</div><div class="line">attrs.backup();</div><div class="line">mTranslator.translateWindowLayout(attrs);</div><div class="line">&#125;</div><div class="line"><span class="keyword">if</span> (DEBUG_LAYOUT) Log.d(TAG, <span class="string">"WindowLayout in setView:"</span> + attrs);</div><div class="line"></div><div class="line"><span class="keyword">if</span> (!compatibilityInfo.supportsScreen()) &#123;</div><div class="line">attrs.privateFlags |= WindowManager.LayoutParams.PRIVATE_FLAG_COMPATIBLE_WINDOW;</div><div class="line">mLastInCompatMode = <span class="keyword">true</span>;</div><div class="line">&#125;</div><div class="line"></div><div class="line">mSoftInputMode = attrs.softInputMode;</div><div class="line">mWindowAttributesChanged = <span class="keyword">true</span>;</div><div class="line">mWindowAttributesChangesFlag = WindowManager.LayoutParams.EVERYTHING_CHANGED;</div><div class="line">mAttachInfo.mRootView = view;</div><div class="line">mAttachInfo.mScalingRequired = mTranslator != <span class="keyword">null</span>;</div><div class="line">mAttachInfo.mApplicationScale =</div><div class="line">mTranslator == <span class="keyword">null</span> ? <span class="number">1.0f</span> : mTranslator.applicationScale;</div><div class="line"><span class="keyword">if</span> (panelParentView != <span class="keyword">null</span>) &#123;</div><div class="line">mAttachInfo.mPanelParentWindowToken</div><div class="line">= panelParentView.getApplicationWindowToken();</div><div class="line">&#125;</div><div class="line">mAdded = <span class="keyword">true</span>;</div><div class="line"><span class="keyword">int</span> res; <span class="comment">/* = WindowManagerImpl.ADD_OKAY; */</span></div><div class="line"></div><div class="line"><span class="comment">// Schedule the first layout -before- adding to the window</span></div><div class="line"><span class="comment">// manager, to make sure we do the relayout before receiving</span></div><div class="line"><span class="comment">// any other events from the system.</span></div><div class="line">requestLayout();</div><div class="line">...</div><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">mOrigWindowType = mWindowAttributes.type;</div><div class="line">mAttachInfo.mRecomputeGlobalAttributes = <span class="keyword">true</span>;</div><div class="line">collectViewAttributes();</div><div class="line">res = mWindowSession.addToDisplay(mWindow, mSeq, mWindowAttributes,</div><div class="line">getHostVisibility(), mDisplay.getDisplayId(),</div><div class="line">mAttachInfo.mContentInsets, mAttachInfo.mStableInsets,</div><div class="line">mAttachInfo.mOutsets, mInputChannel);</div><div class="line">&#125; <span class="keyword">catch</span> (RemoteException e) &#123;</div><div class="line">mAdded = <span class="keyword">false</span>;</div><div class="line">mView = <span class="keyword">null</span>;</div><div class="line">mAttachInfo.mRootView = <span class="keyword">null</span>;</div><div class="line">mInputChannel = <span class="keyword">null</span>;</div><div class="line">mFallbackEventHandler.setView(<span class="keyword">null</span>);</div><div class="line">unscheduleTraversals();</div><div class="line">setAccessibilityFocus(<span class="keyword">null</span>, <span class="keyword">null</span>);</div><div class="line"><span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Adding window failed"</span>, e);</div><div class="line">&#125; <span class="keyword">finally</span> &#123;</div><div class="line"><span class="keyword">if</span> (restore) &#123;</div><div class="line">attrs.restore();</div><div class="line">&#125;</div><div class="line">&#125;</div><div class="line">...</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在setView()中有一段很长的代码，其实最主要的就是 requestLayout()这一块：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestLayout</span><span class="params">()</span> </span>&#123;</div><div class="line"><span class="keyword">if</span> (!mHandlingLayoutInLayoutRequest) &#123;</div><div class="line">checkThread();</div><div class="line">mLayoutRequested = <span class="keyword">true</span>;</div><div class="line">scheduleTraversals();</div><div class="line">&#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在requestLayout()中，系统会执行scheduleTraversals()方法，scheduleTraversals()是绘制View的实际入口，那么绘制完成之后继续调用<code>mWindowSession.addToDisplay()</code>来通知底层系统进行WIndow的添加的过程，mWindowSession是一个Binder对象，类型是IWindowSession,其在ViewRootImpl初始化的时候通过<code>mWindowSession = WindowManagerGlobal.getWindowSession()</code>来获取得到，获取到的是一个Session类，我们里面查询到daaToDisplay()方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">addToDisplay</span><span class="params">(IWindow window, <span class="keyword">int</span> seq, WindowManager.LayoutParams attrs,</span></span></div><div class="line"><span class="keyword">int</span> viewVisibility, <span class="keyword">int</span> displayId, Rect outContentInsets,</div><div class="line">InputChannel outInputChannel) &#123;</div><div class="line"><span class="keyword">return</span> mService.addWindow(<span class="keyword">this</span>, window, seq, attrs, viewVisibility, displayId,</div><div class="line">outContentInsets, outInputChannel);</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在代码里面可以看到，其实就是通过WindowManagerService来进行处理通知底层进行window的添加的操作。</p>
+<p>上面的一大段代码解释了Window创建以及View的添加过程，简而言之，就是我们View添加进了Window中，window通过调用addView(…)方法经过各种会调用最终调用IWindowSession实现类Session的addToDisplay(…)方法，在addToDisplay(…)方法中通知了WMS来处理窗口添加的过程。</p>
+<hr>
+<p>总结：</p>
+<p>我们在初始化一个根view(可以理解为setContentView())时，其实将view添加到window中，借由window来进行通知交互的一个过程，一个根View对应一个window对应一个ViewRoot，ViewRoot是页面绘制的核心类，如我们在view中measure(),layout(),onDraw()方法皆由当前类为媒介通知系统进行对应的工作。</p>
+<p>附:</p>
+<img src="/2017/03/13/android-View的探索-三View-Window-Activity之间的关系/ggg.png" alt="过程图" title="过程图">
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/android/" rel="tag"># android</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/03/04/深入理解计算机系统第一章/" rel="next" title="深入理解计算机系统第一章">
+                <i class="fa fa-chevron-left"></i> 深入理解计算机系统第一章
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2017/03/13/android-View的探索-三View-Window-Activity之间的关系/"
+           data-title="android-View的探索-三View,Window,Activity之间的关系" data-url="http://yoursite.com/2017/03/13/android-View的探索-三View-Window-Activity之间的关系/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview sidebar-panel sidebar-panel-active">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.jpg"
+               alt="Jerry Chan" />
+          <p class="site-author-name" itemprop="name">Jerry Chan</p>
+          <p class="site-description motion-element" itemprop="description">In me the tiger sniffes the rose</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/JerryChan123" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                  GitHub
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://weibo.com/Jerry_Linnnnnnn" target="_blank" title="微博">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  微博
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="http://www.zhihu.com/people/annylin0922" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                  知乎
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Jerry Chan</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"jerrychan123"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    
+    <script src="/lib/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("OtRTTkhYQKMh2ztC9L6czjbP-gzGzoHsz", "dsKHW7hE1MX9u21g5zouUp7R");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+</body>
+</html>
