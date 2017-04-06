@@ -94,7 +94,7 @@
 注：本文基于4.4源码">
 <meta property="og:image" content="http://yoursite.com/2017/03/30/Fragment深入学习/life.png">
 <meta property="og:image" content="http://yoursite.com/2017/03/30/Fragment深入学习/whole_Fragment.png">
-<meta property="og:updated_time" content="2017-04-06T02:04:24.000Z">
+<meta property="og:updated_time" content="2017-04-06T02:08:04.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Fragment深入学习">
 <meta name="twitter:description" content="公司项目是基于插件进行开发的，在开发初期，由于时间成本以及插件框架不完善，所以为了避坑(主要来源于插件)，项目中大量利用了Fragment作为核心的展示视图，因此趁这段比较清闲的时间整理学习一下Fragment。
@@ -356,7 +356,7 @@
         <p>公司项目是基于插件进行开发的，在开发初期，由于时间成本以及插件框架不完善，所以为了避坑(主要来源于插件)，项目中大量利用了<code>Fragment</code>作为核心的展示视图，因此趁这段比较清闲的时间整理学习一下<code>Fragment</code>。</p>
 <p>注：本文基于4.4源码</p>
 <a id="more"></a>
-<h3>Fragment生命周期</h3><br>Fragment对应着Activity相似的生命周期，Fragment必须是依存与Activity而存在的，因此Activity的生命周期会直接影响到Fragment的生命周期，整体对应的如下所示(来自官网)：<br><br><img src="/2017/03/30/Fragment深入学习/life.png" alt="Lifecycle of Fragment" title="Lifecycle of Fragment"><br><br>- 在Activity的<code>onCreate(savedInstanceState)</code>时候Fragment会首先执行onAttach(Activity),这里可以获取到Activity实例；然后接着走onCreate()-&gt;onCreateView()-&gt;onActivityCreated()。<br><br>- 在Activity的<code>onDestroy()</code>的时候回依次走onDestroyView()-&gt;onDestroy()-&gt;onDetach().<br><br>上述尽管是谷歌官网给出的一个简单示例图，但是在实际上，Fragment的生命周期的管理是非常复杂的，Square公司的攻城狮做一个更加完整的图示如下:<br><br><img src="/2017/03/30/Fragment深入学习/whole_Fragment.png" alt="[Concrete Fragment](http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/0605/2996.html)" title="[Concrete Fragment](http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/0605/2996.html)"><br><br>关于基本用法这里就不介绍了，直接进入到源码的层次去查看Fragment的具体生命周期以及增删查改的流程吧。<br><br>—<br><br><h3>源码解析</h3>
+<h3>Fragment生命周期</h3><br>Fragment对应着Activity相似的生命周期，Fragment必须是依存与Activity而存在的，因此Activity的生命周期会直接影响到Fragment的生命周期，整体对应的如下所示(来自官网)：<br><br><img src="/2017/03/30/Fragment深入学习/life.png" alt="Lifecycle of Fragment" title="Lifecycle of Fragment"><br><br><br><br>- 在Activity的<code>onCreate(savedInstanceState)</code>时候Fragment会首先执行onAttach(Activity),这里可以获取到Activity实例；然后接着走onCreate()-&gt;onCreateView()-&gt;onActivityCreated()。<br><br>- 在Activity的<code>onDestroy()</code>的时候回依次走onDestroyView()-&gt;onDestroy()-&gt;onDetach().<br><br>上述尽管是谷歌官网给出的一个简单示例图，但是在实际上，Fragment的生命周期的管理是非常复杂的，Square公司的攻城狮做一个更加完整的图示如下:<br><br><img src="/2017/03/30/Fragment深入学习/whole_Fragment.png" alt="[Concrete Fragment](http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/0605/2996.html)" title="[Concrete Fragment](http://www.jcodecraeer.com/a/anzhuokaifa/androidkaifa/2015/0605/2996.html)"><br><br>关于基本用法这里就不介绍了，直接进入到源码的层次去查看Fragment的具体生命周期以及增删查改的流程吧。<br><br>—<br><br><h3>源码解析</h3>
 
 <p>在开始介绍之前我先把要涉及的类罗列出来：</p>
 <ul>
