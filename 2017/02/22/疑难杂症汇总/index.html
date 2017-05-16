@@ -97,7 +97,7 @@
 <meta property="og:image" content="http://yoursite.com/2017/02/22/疑难杂症汇总/1.png">
 <meta property="og:image" content="http://yoursite.com/2017/02/22/疑难杂症汇总/2.png">
 <meta property="og:image" content="http://yoursite.com/2017/02/22/疑难杂症汇总/3.png">
-<meta property="og:updated_time" content="2017-03-08T09:46:08.000Z">
+<meta property="og:updated_time" content="2017-05-16T08:13:15.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="疑难杂症汇总">
 <meta name="twitter:description" content="1.公司需求需要在RecycerView滑动的时候每一个item在可见度&amp;gt;=50%时上报数据，一般的RecyclerView.OnScrollListener中我们做处理，如果自己去计算item的展示可见度那是很麻烦的，解决思路如下:
@@ -370,6 +370,10 @@
 <img src="/2017/02/22/疑难杂症汇总/1.png" alt="one" title="one">
 <img src="/2017/02/22/疑难杂症汇总/2.png" alt="one" title="one">
 <img src="/2017/02/22/疑难杂症汇总/3.png" alt="one" title="one">
+<hr>
+<p>4.实现图片的上居中效果：</p>
+<p>参考ImageView.Conter_Crop的实现方法实现即可</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onLayout</span><span class="params">(<span class="keyword">boolean</span> changed, <span class="keyword">int</span> left, <span class="keyword">int</span> top, <span class="keyword">int</span> right, <span class="keyword">int</span> bottom)</span> </span>&#123;</div><div class="line">       <span class="keyword">super</span>.onLayout(changed, left, top, right, bottom);</div><div class="line">       <span class="keyword">if</span> (mWidth == <span class="number">0</span>) &#123;</div><div class="line">           mWidth = getMeasuredWidth();</div><div class="line">           mHeight = getMeasuredHeight();</div><div class="line">       &#125;</div><div class="line">   &#125;</div><div class="line"></div><div class="line">   <span class="meta">@Override</span></div><div class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onDraw</span><span class="params">(Canvas canvas)</span> </span>&#123;</div><div class="line">       <span class="comment">// 参考ImageView的CenterCrop实现</span></div><div class="line">       mDrawable = getDrawable();</div><div class="line">       <span class="keyword">if</span> (mDrawable != <span class="keyword">null</span>) &#123;</div><div class="line">           mMatrix = getImageMatrix();</div><div class="line">           mDWidth = mDrawable.getIntrinsicWidth();</div><div class="line">           mDHeight = mDrawable.getIntrinsicHeight();</div><div class="line">           <span class="keyword">float</span> scale;</div><div class="line">           <span class="keyword">float</span> dx = <span class="number">0</span>, dy = <span class="number">0</span>;</div><div class="line">           <span class="keyword">if</span> (mDWidth * mHeight &gt; mWidth * mDHeight) &#123;</div><div class="line">               scale = mHeight / mDHeight;</div><div class="line">               dx = (mWidth - mDWidth * scale) * <span class="number">0.5f</span>;</div><div class="line">           &#125; <span class="keyword">else</span> &#123;</div><div class="line">               scale = mWidth / mDWidth;</div><div class="line">               dy = (mHeight - mDHeight * scale) * <span class="number">0.5f</span>;</div><div class="line">           &#125;</div><div class="line">           mMatrix.setScale(scale, scale);</div><div class="line">           mMatrix.postTranslate(dx, <span class="number">0</span>);</div><div class="line">           setImageMatrix(mMatrix);</div><div class="line">       &#125;</div><div class="line">       <span class="keyword">super</span>.onDraw(canvas);</div><div class="line">   &#125;</div></pre></td></tr></table></figure>
 
       
     </div>
@@ -477,7 +481,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">21</span>
+              <span class="site-state-item-count">22</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
